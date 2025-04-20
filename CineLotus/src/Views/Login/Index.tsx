@@ -1,74 +1,95 @@
-import { Avatar, Box, Button, Paper, TextField } from "@mui/material"
-import IconoRojo from "../../../public/IconoUserRojo.png"
-import { AccountCircle } from "@mui/icons-material"
-import HttpsIcon from '@mui/icons-material/Https';
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Alert,
+} from '@mui/material';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+type Props = {
+  setUser: (user: { nombre: string }) => void;
+};
 
-
-
-export const Login: React.FC<{}> = () => {
+export const Login: React.FC<Props> = ({ setUser }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [token, setToken] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
+    
+    
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
         try {
           const response = await axios.post('http://localhost:3000/users/login', {
             username,
             password
           });
-          setToken(response.data.token);
-          localStorage.setItem('token', response.data.token);
-        } catch (error) {
-          console.error('Error al iniciar sesión:', error);
-        }
-      };
-      
-      const handleProfile = async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          console.log('No estás autenticado');
-          return;
-        }
-    
-        try {
-          const response = await axios.get('http://localhost:3000/users/profile', {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          console.log(response.data.message);
-        } catch (error) {
-          console.error('Error al obtener perfil:', error);
+          const token = response.data.token;
+          localStorage.setItem('token', token);
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          setUser({ nombre: payload.username });
+          navigate('/'); // redirige al dashboard
+        } catch (err) {
+          if (axios.isAxiosError(err)) {
+            setError(err.response?.data?.message || 'Error en el login');
+          } else if (err instanceof Error) {
+            setError(err.message);
+          } else {
+            setError('Ocurrió un error desconocido');
+          }
         }
       };
 
     return (
-        <Box sx={{ bgcolor: "#d8d8d8", width: '100%', height: '100vh', display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Paper elevation={24} sx={{ width: 400, height: 300, borderRadius: "10%" }}>
-                <Box sx={{ width: "100%", height:80, position: "relative" }}>
-                    <Avatar alt="Avatar Icon" src={IconoRojo} sx={{ position: "absolute", left: "50%", top: -50, height: 100, width: 100, transform: "translateX(-50%)" }} />
-                </Box>
-                <Box sx={{display:"grid", placeItems:"center", rowGap:2}}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-end',  width:"80%" }}>
-                        <AccountCircle sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                        <TextField id="input-user-name" label="Nombre de usuario" variant="standard" sx={{width:"100%"}} onChange={(e) => setUsername(e.target.value)}/>
-                    </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-end', width:"80%" }}>
-                        <HttpsIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                        <TextField id="input-password" label="Contraseña" variant="standard" sx={{width:"100%"}} onChange={(e) => setPassword(e.target.value)}/>
-                    </Box>
-                    <Box sx={{marginTop:3}}>
-                        <Button sx={{bgcolor:"#ff6b6b"}} variant="contained" onClick={handleLogin}>Iniciar sesión</Button>
-                    </Box>
-                </Box>
-                <button onClick={handleProfile}>Ver perfil</button>
-
-                {token && <div>Token JWT: {token}</div>}
-            </Paper>
+      <Container maxWidth="xs">
+        <Box sx={{ mt: 8 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Iniciar Sesión
+          </Typography>
+  
+          <form onSubmit={handleLogin}>
+            <TextField
+              label="Nombre de usuario"
+              fullWidth
+              margin="normal"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+            <TextField
+              label="Contraseña"
+              type="password"
+              fullWidth
+              margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+  
+            {error && (
+              <Alert severity="error" sx={{ mt: 2 }}>
+                {error}
+              </Alert>
+            )}
+  
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ mt: 3 }}
+            >
+              Ingresar
+            </Button>
+          </form>
         </Box>
-    )
-}
+      </Container>
+    );
+  };
+  
+  export default Login;

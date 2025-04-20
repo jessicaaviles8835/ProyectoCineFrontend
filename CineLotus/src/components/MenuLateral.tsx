@@ -10,15 +10,19 @@ import {
 } from '@mui/material';
 
 import PeopleIcon from '@mui/icons-material/People';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import TheatersIcon from '@mui/icons-material/Theaters';
 import LogoutIcon from '@mui/icons-material/Logout';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CastIcon from '@mui/icons-material/Cast';
+import MovieFilterIcon from '@mui/icons-material/MovieFilter';
   
   type Props = {
     open: boolean;
     onClose: () => void;
+    onLogout: () => void;
   };
   
-  const Sidebar: React.FC<Props> = ({ open, onClose }) => {
+  const Sidebar: React.FC<Props> = ({ open, onClose, onLogout }) => {
   
     return (
       <Drawer
@@ -38,9 +42,42 @@ import LogoutIcon from '@mui/icons-material/Logout';
             onClick={onClose}
           >
             <ListItemIcon>
-              <PeopleIcon />
+              <MovieFilterIcon />
             </ListItemIcon>
             <ListItemText primary="Cartelera" />
+          </ListItemButton>
+
+          <ListItemButton
+            component={Link}
+            to="/cartelera"
+            onClick={onClose}
+          >
+            <ListItemIcon>
+              <CalendarMonthIcon />
+            </ListItemIcon>
+            <ListItemText primary="Gestionar cartelera" />
+          </ListItemButton>
+          
+          <ListItemButton
+            component={Link}
+            to="/salas"
+            onClick={onClose}
+          >
+            <ListItemIcon>
+              <CastIcon />
+            </ListItemIcon>
+            <ListItemText primary="Gestionar salas" />
+          </ListItemButton>
+
+          <ListItemButton
+            component={Link}
+            to="/peliculas"
+            onClick={onClose}
+          >
+            <ListItemIcon>
+              <TheatersIcon />
+            </ListItemIcon>
+            <ListItemText primary="Gestionar películas" />
           </ListItemButton>
 
           <ListItemButton
@@ -49,12 +86,12 @@ import LogoutIcon from '@mui/icons-material/Logout';
             onClick={onClose}
           >
             <ListItemIcon>
-              <AccountCircleIcon />
+              <PeopleIcon />
             </ListItemIcon>
-            <ListItemText primary="Usuarios" />
+            <ListItemText primary="Gestionar usuarios" />
           </ListItemButton>
 
-          <ListItemButton onClick={() => console.log('Cerrar sesión')}>
+          <ListItemButton onClick={() => onLogout()}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>

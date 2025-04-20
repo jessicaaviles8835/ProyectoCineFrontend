@@ -1,25 +1,45 @@
-import { AppBar, IconButton, Toolbar, Typography } from '@mui/material';
+import { AppBar, IconButton, Toolbar, Typography, Box, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 type Props = {
   onToggleDrawer: () => void;
+  user: { nombre: string } | null;
+  onLogout: () => void;
 };
 
-const Encabezado: React.FC<Props> = ({ onToggleDrawer }) => {
+const Encabezado: React.FC<Props> = ({ onToggleDrawer, user, onLogout }) => {
   return (
     <AppBar position="fixed">
       <Toolbar>
-        <IconButton
-          color="inherit"
-          edge="start"
-          onClick={onToggleDrawer}
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" noWrap>
-          Cine Lotus
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+          <IconButton
+            color="inherit"
+            edge="start"
+            onClick={onToggleDrawer}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            Cine Lotus
+          </Typography>
+        </Box>
+        {user ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <AccountCircleIcon />
+            <Typography variant="body1">Hola, {user.nombre}</Typography>
+            <Button color="inherit" onClick={onLogout}>
+              Cerrar sesión
+            </Button>
+          </Box>
+        ) : (
+          <Button color="inherit" component={Link} to="/login">
+            Ingresar
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );

@@ -15,6 +15,7 @@ import Snackbar from '@mui/material/Snackbar';
 function App() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ nombre: string } | null>(null);
+  const [rol, setRol] = useState<{ nombre: string } | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
@@ -24,6 +25,7 @@ function App() {
       try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
         setUser({ nombre: payload.username });
+        setRol({ nombre: payload.tipo });
       } catch (err) {
         console.error('Token inválido');
       }
@@ -45,7 +47,7 @@ function App() {
         user={user}
         onLogout={handleLogout}
       />
-      <MenuLateral open={open} onClose={() => setOpen(false)} onLogout={handleLogout} />
+      <MenuLateral open={open} onClose={() => setOpen(false)} onLogout={handleLogout} rol={rol} />
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />

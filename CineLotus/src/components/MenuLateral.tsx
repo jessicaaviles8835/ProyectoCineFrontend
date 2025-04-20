@@ -20,9 +20,12 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
     open: boolean;
     onClose: () => void;
     onLogout: () => void;
+    rol: { nombre: string } | null;
   };
   
-  const Sidebar: React.FC<Props> = ({ open, onClose, onLogout }) => {
+  const Sidebar: React.FC<Props> = ({ open, onClose, onLogout , rol}) => {
+
+    const puedeVer = (roles: string[]) => roles.includes(rol?.nombre ??  '');
   
     return (
       <Drawer
@@ -46,7 +49,7 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
             </ListItemIcon>
             <ListItemText primary="Cartelera" />
           </ListItemButton>
-
+          {puedeVer(['Admin']) && (
           <ListItemButton
             component={Link}
             to="/cartelera"
@@ -56,8 +59,9 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
               <CalendarMonthIcon />
             </ListItemIcon>
             <ListItemText primary="Gestionar cartelera" />
-          </ListItemButton>
+          </ListItemButton>)}
           
+          {puedeVer(['Admin']) && (
           <ListItemButton
             component={Link}
             to="/salas"
@@ -67,8 +71,9 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
               <CastIcon />
             </ListItemIcon>
             <ListItemText primary="Gestionar salas" />
-          </ListItemButton>
+          </ListItemButton>)}
 
+          {puedeVer(['Admin']) && (
           <ListItemButton
             component={Link}
             to="/peliculas"
@@ -78,8 +83,9 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
               <TheatersIcon />
             </ListItemIcon>
             <ListItemText primary="Gestionar películas" />
-          </ListItemButton>
+          </ListItemButton>)}
 
+          {puedeVer(['Admin']) && (
           <ListItemButton
             component={Link}
             to="/usuarios"
@@ -89,7 +95,7 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
               <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="Gestionar usuarios" />
-          </ListItemButton>
+          </ListItemButton>)}
 
           <ListItemButton onClick={() => onLogout()}>
             <ListItemIcon>

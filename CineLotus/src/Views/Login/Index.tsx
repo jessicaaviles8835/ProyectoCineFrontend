@@ -5,6 +5,7 @@ import {
   TextField,
   Typography,
   Alert,
+  CircularProgress
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,6 +19,7 @@ type Props = {
 export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [cargando, setCargando] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
     
@@ -26,6 +28,7 @@ export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setCargando(true)
         try {
           const response = await axios.post('http://localhost:3000/users/login', {
             username,
@@ -46,6 +49,9 @@ export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
             setError('Ocurrió un error desconocido');
           }
         }
+        finally{
+            setCargando(false)
+        };
       };
 
     return (
@@ -73,7 +79,7 @@ export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-  
+            {cargando && <CircularProgress />}
             {error && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {error}

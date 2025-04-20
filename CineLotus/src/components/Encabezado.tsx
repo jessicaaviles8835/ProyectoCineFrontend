@@ -36,9 +36,14 @@ const Encabezado: React.FC<Props> = ({ onToggleDrawer, user, onLogout }) => {
             </Button>
           </Box>
         ) : (
+          <>
           <Button color="inherit" component={Link} to="/login">
             Ingresar
           </Button>
+          <Button color="inherit" component={Link} to="/registrarse">
+            Registrarse
+          </Button>
+          </>
         )}
       </Toolbar>
     </AppBar>

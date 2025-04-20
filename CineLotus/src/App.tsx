@@ -10,6 +10,7 @@ import NuevaSala from './Views/Admin/NuevaSala'
 import EditarSala from './Views/Admin/EditarSala'
 import Peliculas from './Views/Admin/Peliculas'
 import Usuarios from './Views/Admin/Usuarios'
+import RegistrarUsuario from './Views/Admin/RegistrarUsuario'
 import Snackbar from '@mui/material/Snackbar';
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
           <Route path="/salas/ver/:id" element={<EditarSala />} />
           <Route path="/peliculas" element={<Peliculas />} />
           <Route path="/usuarios" element={<Usuarios />} />
+          <Route path="/registrarse" element={<RegistrarUsuario />} />
           <Route path="/login" element={<Login setUser={setUser} setTipo={setTipo} />} />
         </Routes>
       </Box>

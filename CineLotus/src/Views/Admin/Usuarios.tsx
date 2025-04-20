@@ -1,4 +1,4 @@
-import { Container, CircularProgress, Alert, Box, Typography, TextField, IconButton} from '@mui/material';
+import { Container, CircularProgress, Alert, Box, Typography, TextField, IconButton,Button} from '@mui/material';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import LocalMoviesOutlinedIcon from '@mui/icons-material/LocalMoviesOutlined';
@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { GridRenderCellParams } from '@mui/x-data-grid';
-
+import { Link } from 'react-router-dom';
 
 
 
@@ -20,11 +20,11 @@ type Usuario = {
 };
 
 const columnas = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  { field: 'nombre', headerName: 'Nombre', width: 200 },
-  { field: 'email', headerName: 'Correo', width: 200 },
-  { field: 'tipo', headerName: 'Tipo', width: 200 },
-  { field: 'activo', headerName: 'Activo', width: 100 },
+  { field: 'id', headerName: 'ID', flex: 1  },
+  { field: 'nombre', headerName: 'Nombre', flex: 3  },
+  { field: 'email', headerName: 'Correo', flex: 3  },
+  { field: 'tipo', headerName: 'Tipo', flex: 2  },
+  { field: 'activo', headerName: 'Activo', flex: 2  },
   {
     field: 'fecha_creacion',
     headerName: 'Fecha Creación',
@@ -37,7 +37,8 @@ const columnas = [
         month: 'short',
         year: 'numeric',
       });
-    },
+    }
+    , flex: 2
   },
   {
     field: 'acciones',
@@ -48,13 +49,6 @@ const columnas = [
     disableColumnMenu: true,
     renderCell: (params:GridRenderCellParams) => (
       <Box display="flex" gap={1}>
-        <IconButton
-          color="primary"
-          size="small"
-          onClick={() => console.log('Ver', params.row)}
-        >
-          <VisibilityIcon />
-        </IconButton>
         <IconButton
           color="primary"
           size="small"
@@ -89,7 +83,7 @@ const Usuarios = () => {
           }
         })
         .then((res) => setUsuarios(res.data))
-        .catch(() => setError('Error al cargar las Usuarios'))
+        .catch(() => setError('Error al cargar los Usuarios'))
         .finally(() => setCargando(false));
     }, []);
 
@@ -109,7 +103,7 @@ const Usuarios = () => {
     }, [busqueda, usuarios]); // El efecto se ejecuta cada vez que cambia la búsqueda
   
     return (
-      <Container maxWidth="xl" sx={{ mt: 5 }}>
+      <Container sx={{ mt: 5 }}>
         {cargando && <CircularProgress />}
         {error && <Alert severity="error">{error}</Alert>}
         
@@ -119,6 +113,13 @@ const Usuarios = () => {
             Gestión de usuarios
           </Typography>
         </Box>
+        <Box sx={{ mb: 3 }}>
+          <Link to="/nuevousuario" style={{ textDecoration: 'none' }}>
+            <Button variant="contained" color="primary">
+              Agregar Nuevo Usuario
+            </Button>
+          </Link>
+        </Box>
         <TextField
           label="Buscar por nombre o correo"
           variant="outlined"
@@ -127,10 +128,11 @@ const Usuarios = () => {
           onChange={(e) => setBusqueda(e.target.value)}
           sx={{ mb: 2 }}
         />
-        <Box sx={{ height: 400, width: '100%', overflowX: 'auto' }}>
+        <Box sx={{ height: 400 }}>
           <DataGrid
             rows={filasFiltradas}
             columns={columnas}
+            autoPageSize
             sx={{
               '& .MuiDataGrid-columnHeader': {
                 whiteSpace: 'nowrap',

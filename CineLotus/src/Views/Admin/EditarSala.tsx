@@ -69,7 +69,7 @@ export default function EditarSala() {
         {error && <Alert severity="error">{error}</Alert>}
         <Box sx={{ mt: 8 }}>
             <Typography variant="h4" align="center" gutterBottom>
-                Agregar nueva sala
+                Modificar sala
             </Typography>
 
             <form onSubmit={enviarSala}>

@@ -20,12 +20,12 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
     open: boolean;
     onClose: () => void;
     onLogout: () => void;
-    rol: { nombre: string } | null;
+    tipo: { nombre: string } | null;
   };
   
-  const Sidebar: React.FC<Props> = ({ open, onClose, onLogout , rol}) => {
-
-    const puedeVer = (roles: string[]) => roles.includes(rol?.nombre ??  '');
+  const Sidebar: React.FC<Props> = ({ open, onClose, onLogout, tipo}) => {
+    
+    const puedeVer = (roles: string[]) => tipo && roles.includes(tipo.nombre);
   
     return (
       <Drawer
@@ -96,13 +96,13 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
             </ListItemIcon>
             <ListItemText primary="Gestionar usuarios" />
           </ListItemButton>)}
-
+          {puedeVer(['Admin','Cliente']) && (
           <ListItemButton onClick={() => onLogout()}>
             <ListItemIcon>
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText primary="Cerrar sesión" />
-          </ListItemButton>
+          </ListItemButton>)}
         </List>
       </Drawer>
     );

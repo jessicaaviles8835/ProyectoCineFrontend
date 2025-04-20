@@ -15,7 +15,7 @@ import Snackbar from '@mui/material/Snackbar';
 function App() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<{ nombre: string } | null>(null);
-  const [rol, setRol] = useState<{ nombre: string } | null>(null);
+  const [tipo, setTipo] = useState<{ nombre: string } | null>(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ function App() {
       try {
         const payload = JSON.parse(atob(token.split('.')[1])); // Decodifica el JWT
         setUser({ nombre: payload.username });
-        setRol({ nombre: payload.tipo });
+        setTipo({ nombre: payload.tipo });
       } catch (err) {
         console.error('Token inválido');
       }
@@ -35,8 +35,9 @@ function App() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    setTipo(null);
     setOpenSnackbar(true);
-    navigate('/');
+    navigate('/'); // redirige a la cartelera
   };
 
 
@@ -47,7 +48,7 @@ function App() {
         user={user}
         onLogout={handleLogout}
       />
-      <MenuLateral open={open} onClose={() => setOpen(false)} onLogout={handleLogout} rol={rol} />
+      <MenuLateral open={open} onClose={() => setOpen(false)} onLogout={handleLogout} tipo={tipo}/>
 
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
@@ -58,7 +59,7 @@ function App() {
           <Route path="/salas/ver/:id" element={<EditarSala />} />
           <Route path="/peliculas" element={<Peliculas />} />
           <Route path="/usuarios" element={<Usuarios />} />
-          <Route path="/login" element={<Login setUser={setUser} />} />
+          <Route path="/login" element={<Login setUser={setUser} setTipo={setTipo} />} />
         </Routes>
       </Box>
       <Snackbar

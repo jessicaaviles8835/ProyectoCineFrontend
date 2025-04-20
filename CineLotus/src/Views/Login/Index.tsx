@@ -12,9 +12,10 @@ import axios from 'axios';
 
 type Props = {
   setUser: (user: { nombre: string }) => void;
+  setTipo: (tipo: { nombre: string }) => void;
 };
 
-export const Login: React.FC<Props> = ({ setUser }) => {
+export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -34,7 +35,8 @@ export const Login: React.FC<Props> = ({ setUser }) => {
           localStorage.setItem('token', token);
           const payload = JSON.parse(atob(token.split('.')[1]));
           setUser({ nombre: payload.username });
-          navigate('/'); // redirige al dashboard
+          setTipo({ nombre: payload.tipo });
+          navigate('/'); // redirige a la cartelera
         } catch (err) {
           if (axios.isAxiosError(err)) {
             setError(err.response?.data?.message || 'Error en el login');

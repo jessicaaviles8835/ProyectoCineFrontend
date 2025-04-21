@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, Container, Alert } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, Alert, CircularProgress } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,22 +7,25 @@ export default function RegistrarUsuario() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [cargando, setCargando] = useState(false);
     const navigate = useNavigate();
 
     const enviarUsuario = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (password !== confirmPassword) {
+          setError('Las contraseñas no coinciden');
+          return;
+        }
         setError(null);
-        const token = localStorage.getItem('token');
+        setCargando(true)
         try {
             const response = await axios.post('http://localhost:3000/users/register', {
               username,
               email,
               password
-            }, {
-                headers: {
-                Authorization: `Bearer ${token}`
-            }});
+            });
             console.log(response);
             navigate('/login'); // redirige al login
         } catch (err) {
@@ -34,6 +37,9 @@ export default function RegistrarUsuario() {
             setError('Ocurrió un error desconocido');
           }
         }
+        finally{
+            setCargando(false)
+        };
       };
 
   return (
@@ -70,6 +76,20 @@ export default function RegistrarUsuario() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 />
+
+                <TextField
+                label="Repetir contraseña"
+                type="password"
+                fullWidth
+                margin="normal"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={!!error}
+                helperText={error}
+                required
+                  />
+
+                {cargando && <CircularProgress />}
                 {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                     {error}

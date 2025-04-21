@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, Container, Alert } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, Alert, CircularProgress } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -8,11 +8,13 @@ export default function NuevaSala() {
     const [filas, setFilas] = useState('');
     const [columnas, setColumnas] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [cargando, setCargando] = useState(false);
     const navigate = useNavigate();
 
     const enviarSala = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setCargando(true)
         const token = localStorage.getItem('token');
         try {
             const response = await axios.post('http://localhost:3000/salas/new', {
@@ -34,6 +36,9 @@ export default function NuevaSala() {
             setError('Ocurrió un error desconocido');
           }
         }
+        finally{
+          setCargando(false)
+        };
       };
 
   return (
@@ -70,6 +75,7 @@ export default function NuevaSala() {
                 onChange={(e) => setColumnas(e.target.value)}
                 required
                 />
+                {cargando && <CircularProgress />}
                 {error && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                     {error}

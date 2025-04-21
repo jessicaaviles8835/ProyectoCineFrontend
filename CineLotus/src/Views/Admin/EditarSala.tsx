@@ -115,9 +115,10 @@ export default function EditarSala() {
                 value={activa}
                 onChange={(e) => setActiva(e.target.value)}
                 fullWidth
+                margin="normal"
                 required
                 >
-                  <MenuItem value="">Selecciona un rol</MenuItem>
+                  <MenuItem value="">Selecciona una opción</MenuItem>
                   <MenuItem value="Si">Si</MenuItem>
                   <MenuItem value="No">No</MenuItem>
                 </TextField>

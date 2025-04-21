@@ -1,12 +1,14 @@
-import { Box, Button, TextField, Typography, Container, Alert, CircularProgress } from '@mui/material';
+import { Box, Button, TextField, Typography, Container, Alert, CircularProgress, MenuItem } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function RegistrarUsuario() {
+export default function NuevoUsuario() {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [tipo, setTipo] = useState('');
+    const [activo, setActivo] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [cargando, setCargando] = useState(false);
@@ -19,14 +21,20 @@ export default function RegistrarUsuario() {
           return;
         }
         setError(null);
-        setCargando(true)
+        setCargando(true);
+        const token = localStorage.getItem('token');
         try {
-            await axios.post('http://localhost:3000/users/register', {
+            await axios.post('http://localhost:3000/users/new', {
               username,
               email,
-              password
-            });
-            navigate('/login'); // redirige al login
+              password,
+              tipo,
+              activo
+            }, {
+              headers: {
+              Authorization: `Bearer ${token}`
+            }});
+            navigate('/usuarios'); // redirige a la lista de usuarios
         } catch (err) {
           if (axios.isAxiosError(err)) {
             setError(err.response?.data?.message || 'Error al registrar el usuario');
@@ -86,7 +94,35 @@ export default function RegistrarUsuario() {
                 error={!!error}
                 helperText={error}
                 required
-                  />
+                />
+
+                <TextField
+                select
+                label="Tipo de usuario"
+                value={tipo}
+                onChange={(e) => setTipo(e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+                >
+                  <MenuItem value="">Selecciona el tipo de usuario</MenuItem>
+                  <MenuItem value="Admin">Admin</MenuItem>
+                  <MenuItem value="Cliente">Cliente</MenuItem>
+                </TextField>
+
+                <TextField
+                select
+                label="Activo"
+                value={activo}
+                onChange={(e) => setActivo(e.target.value)}
+                fullWidth
+                margin="normal"
+                required
+                >
+                  <MenuItem value="">Selecciona una opción</MenuItem>
+                  <MenuItem value="Si">Si</MenuItem>
+                  <MenuItem value="No">No</MenuItem>
+                </TextField>
 
                 {cargando && <CircularProgress />}
                 {error && (

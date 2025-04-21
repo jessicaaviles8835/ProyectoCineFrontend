@@ -46,7 +46,7 @@ const Cartelera = () => {
           }}
         >
           {peliculas.map((pelicula) => (
-            <PeliculaCard key={pelicula.id} id={pelicula.id} nombrePelicula={pelicula.nombrePelicula} nombreSala={pelicula.nombreSala} 
+            <PeliculaCard key={pelicula.id} id={pelicula.id} nombrePelicula={pelicula.nombrePelicula} 
                     poster={pelicula.poster} descripcionPelicula={pelicula.descripcionPelicula}/>
           ))}
         </Box>

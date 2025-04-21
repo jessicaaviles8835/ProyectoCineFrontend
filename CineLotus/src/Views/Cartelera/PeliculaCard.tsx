@@ -4,11 +4,10 @@ type Props = {
   id: number;
   nombrePelicula: string;
   poster: string;
-  nombreSala: string;
   descripcionPelicula: string;
 };
 
-export const PeliculaCard: React.FC<Props> = ({ id, nombrePelicula,poster,nombreSala,descripcionPelicula }) => {
+export const PeliculaCard: React.FC<Props> = ({ id, nombrePelicula,poster,descripcionPelicula }) => {
   return (
     <Card sx={{ display: 'flex', marginBottom: 2, width: '100%' }}>
       <CardMedia
@@ -20,7 +19,6 @@ export const PeliculaCard: React.FC<Props> = ({ id, nombrePelicula,poster,nombre
       <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
         <CardContent>
           <Typography variant="h6">{nombrePelicula}</Typography>
-          <Typography color="text.secondary">{nombreSala}</Typography>
           <Typography color="text.secondary">{descripcionPelicula}</Typography>
         </CardContent>
       </Box>

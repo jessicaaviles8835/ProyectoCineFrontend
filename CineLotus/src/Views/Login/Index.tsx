@@ -10,6 +10,7 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 type Props = {
   setUser: (user: { nombre: string }) => void;
@@ -93,6 +94,12 @@ export const Login: React.FC<Props> = ({ setUser , setTipo }) => {
               sx={{ mt: 3 }}
             >
               Ingresar
+            </Button>
+            <Button color="inherit" component={Link} to="/registrarse"
+              fullWidth
+              sx={{ mt: 3 }}
+            >
+              Registrarse
             </Button>
           </form>
         </Box>

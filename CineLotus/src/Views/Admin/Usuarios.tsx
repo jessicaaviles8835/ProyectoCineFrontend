@@ -4,7 +4,6 @@ import axios from 'axios';
 import LocalMoviesOutlinedIcon from '@mui/icons-material/LocalMoviesOutlined';
 import { DataGrid } from '@mui/x-data-grid';
 import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import type { GridRenderCellParams } from '@mui/x-data-grid';
 import { Link } from 'react-router-dom';
 

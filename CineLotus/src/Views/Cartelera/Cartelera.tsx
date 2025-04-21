@@ -13,7 +13,11 @@ type Pelicula = {
   fecha: string;
 };
 
-const Cartelera = () => {
+type Props = {
+  user: { nombre: string } | null;
+};
+
+const Cartelera: React.FC<Props> = ({ user }) => {
 
     const [peliculas, setPeliculas] = useState<Pelicula[]>([]);
     const [cargando, setCargando] = useState(true);
@@ -47,7 +51,7 @@ const Cartelera = () => {
         >
           {peliculas.map((pelicula) => (
             <PeliculaCard key={pelicula.id} id={pelicula.id} nombrePelicula={pelicula.nombrePelicula} 
-                    poster={pelicula.poster} descripcionPelicula={pelicula.descripcionPelicula}/>
+                    poster={pelicula.poster} descripcionPelicula={pelicula.descripcionPelicula} user={user}/>
           ))}
         </Box>
       </Container>

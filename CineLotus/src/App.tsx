@@ -4,6 +4,10 @@ import MenuLateral from './components/MenuLateral';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Cartelera from './Views/Cartelera/Cartelera'
+import SeleccionarFecha from './Views/Cartelera/SeleccionarFecha'
+import SeleccionarSala from './Views/Cartelera/SeleccionarSala'
+import SeleccionarButacas from './Views/Cartelera/SeleccionarButacas'
+
 import { Login } from './Views/Login/Index';
 import Salas from './Views/Admin/Salas'
 import NuevaSala from './Views/Admin/NuevaSala'
@@ -14,6 +18,7 @@ import RegistrarUsuario from './Views/Admin/RegistrarUsuario'
 import NuevoUsuario from './Views/Admin/NuevoUsuario'
 import EditarUsuario from './Views/Admin/EditarUsuario'
 import Snackbar from '@mui/material/Snackbar';
+
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -56,7 +61,11 @@ function App() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         <Routes>
-          <Route path="/" element={<Cartelera />} />
+          <Route path="/" element={<Cartelera user={user} />} />
+          <Route path="/reserva/step1/:id" element={<SeleccionarFecha />} />
+          <Route path="/reserva/step2/:id/:fecha" element={<SeleccionarSala />} />
+          <Route path="/reserva/step3/:id" element={<SeleccionarButacas />} />
+          <Route path="/salas/:id" element={<EditarSala />} />
           <Route path="/salas" element={<Salas />} />
           <Route path="/nuevasala" element={<NuevaSala />} />
           <Route path="/salas/:id" element={<EditarSala />} />

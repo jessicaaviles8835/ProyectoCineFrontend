@@ -18,7 +18,7 @@ export default function EditarSala() {
     useEffect(() => {
       const token = localStorage.getItem('token');
       axios
-        .get(`http://localhost:3000/salas/ver/${id}`, {
+        .get(`http://localhost:3000/salas/${id}`, {
             headers: {
               Authorization: `Bearer ${token}`
             }

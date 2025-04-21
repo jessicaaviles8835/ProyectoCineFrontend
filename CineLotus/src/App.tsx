@@ -12,6 +12,7 @@ import Peliculas from './Views/Admin/Peliculas'
 import Usuarios from './Views/Admin/Usuarios'
 import RegistrarUsuario from './Views/Admin/RegistrarUsuario'
 import NuevoUsuario from './Views/Admin/NuevoUsuario'
+import EditarUsuario from './Views/Admin/EditarUsuario'
 import Snackbar from '@mui/material/Snackbar';
 
 function App() {
@@ -58,11 +59,12 @@ function App() {
           <Route path="/" element={<Cartelera />} />
           <Route path="/salas" element={<Salas />} />
           <Route path="/nuevasala" element={<NuevaSala />} />
-          <Route path="/salas/ver/:id" element={<EditarSala />} />
+          <Route path="/salas/:id" element={<EditarSala />} />
           <Route path="/peliculas" element={<Peliculas />} />
           <Route path="/usuarios" element={<Usuarios />} />
           <Route path="/registrarse" element={<RegistrarUsuario />} />
           <Route path="/nuevousuario" element={<NuevoUsuario />} />
+          <Route path="/users/edit/:id" element={<EditarUsuario/>} />
           <Route path="/login" element={<Login setUser={setUser} setTipo={setTipo} />} />
         </Routes>
       </Box>

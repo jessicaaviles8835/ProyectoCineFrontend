@@ -13,7 +13,7 @@ export const SalaCard: React.FC<Props> = ({ idsala,nombre,capacidad,activa}) => 
   return (
     <Card
     component={Link}
-    to={`/salas/ver/${idsala}`}
+    to={`/salas/${idsala}`}
     sx={{ display: 'flex', marginBottom: 2, width: '100%',backgroundColor: '#cdeaf7', color: '#000', transition: '0.3s', textDecoration: 'none', '&:hover': {
       backgroundColor: '#1976d2',
       color: '#fff',

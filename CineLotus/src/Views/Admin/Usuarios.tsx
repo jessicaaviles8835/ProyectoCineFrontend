@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import LocalMoviesOutlinedIcon from '@mui/icons-material/LocalMoviesOutlined';
 import { DataGrid } from '@mui/x-data-grid';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import type { GridRenderCellParams } from '@mui/x-data-grid';
@@ -50,18 +49,12 @@ const columnas = [
     renderCell: (params:GridRenderCellParams) => (
       <Box display="flex" gap={1}>
         <IconButton
+          component={Link}
           color="primary"
           size="small"
-          onClick={() => console.log('Editar', params.row)}
+          to={`/users/edit/${params.row.id}`}
         >
           <EditIcon />
-        </IconButton>
-        <IconButton
-          color="error"
-          size="small"
-          onClick={() => console.log('Eliminar', params.row)}
-        >
-          <DeleteIcon />
         </IconButton>
       </Box>
     ),

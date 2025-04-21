@@ -23,7 +23,7 @@ const Encabezado: React.FC<Props> = ({ onToggleDrawer, user, onLogout }) => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography component={Link} to="/" color="#FFF" variant="h4" noWrap sx={{ textDecoration: 'none','&:visited': {color: '#FFF'}}}>
             Cine Lotus
           </Typography>
         </Box>

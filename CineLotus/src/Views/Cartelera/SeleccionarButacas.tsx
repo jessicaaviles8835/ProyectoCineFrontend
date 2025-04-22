@@ -12,7 +12,7 @@ import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
 
 const tarjetas = Array.from({ length: 100 }, (_, i) => ({
@@ -23,6 +23,7 @@ const tarjetas = Array.from({ length: 100 }, (_, i) => ({
 type Butaca = {
   id: number;
   butaca: number;
+  estado: string;
   nombrePelicula: string;
   poster: string;
   descripcionPelicula: string;
@@ -33,9 +34,37 @@ type Butaca = {
 export default function CuadriculaSinEspacios() {
   const { id } = useParams();
   const [peli, setPeli] = useState<Butaca | null>(null);
-  const [butacas, setButacas] = useState<Butaca[]>([]);
+  const [estadoAsientos, setEstadoAsientos] = useState<Butaca[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(true);
+
+  const manejarClickAsiento = (numero: number) => {
+    setEstadoAsientos((prev) =>
+      prev.map((asiento) => {
+        if (asiento.butaca === numero) {
+          if (asiento.estado === "Reservada") return asiento; // ocupado, no cambia
+          return {
+            ...asiento,
+            color: asiento.estado === "Libre" ? "verde" : "amarillo",
+          };
+        }
+        return asiento;
+      })
+    );
+  };
+
+  const obtenerColorHex = (estadoNombre: string) => {
+    switch (estadoNombre) {
+      case "Libre":
+        return "#ffffff";
+      case "Reservada":
+        return "#f44336";
+      case "Pendiente":
+        return "#ffeb3b";
+      default:
+        return "#ffffff";
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -46,7 +75,7 @@ export default function CuadriculaSinEspacios() {
         },
       })
       .then((res) => {
-        setButacas(res.data);
+        setEstadoAsientos(res.data);
         setPeli(res.data[0]);
       })
       .catch(() => setError("Error al cargar los datos"))
@@ -95,40 +124,51 @@ export default function CuadriculaSinEspacios() {
           border: "1px solid #ccc", // opcional: para ver el borde general
         }}
       >
-        {tarjetas.map((tarjeta) => (
-          <Box
-            key={tarjeta.id}
-            sx={{
-              position: "relative",
-              overflow: "hidden",
-              height: 75, // puedes ajustar según lo que necesites
-            }}
-          >
-            <Card
+        {tarjetas.map((tarjeta) => {
+          const estado = estadoAsientos.find(
+            (asiento) => asiento.butaca === tarjeta.id
+          );
+          const colorNombre = estado?.estado || "Libre";
+          const colorHex = obtenerColorHex(colorNombre);
+
+          return (
+            <Box
+              key={tarjeta.id}
               sx={{
                 position: "relative",
                 overflow: "hidden",
-                padding: 2,
-                backgroundColor: "#cdeaf7",
+                height: 75,
               }}
             >
-              <ChairOutlinedIcon
+              <Card
+                onClick={() => manejarClickAsiento(tarjeta.id)}
                 sx={{
-                  position: "absolute",
-                  top: "50%",
-                  right: "50%",
-                  transform: "translate(50%, -50%)",
-                  fontSize: "4rem", // ajusta según el tamaño de la tarjeta
-                  color: "grey.500",
-                  opacity: 0.9,
-                  zIndex: 0,
-                  pointerEvents: "none",
+                  position: "relative",
+                  overflow: "hidden",
+                  padding: 2,
+                  backgroundColor: colorHex,
+                  cursor: colorNombre === "rojo" ? "not-allowed" : "pointer",
+                  opacity: colorNombre === "rojo" ? 0.6 : 1,
                 }}
-              />
-              <Typography variant="caption">{tarjeta.id}</Typography>
-            </Card>
-          </Box>
-        ))}
+              >
+                <ChairOutlinedIcon
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    right: "50%",
+                    transform: "translate(50%, -50%)",
+                    fontSize: "4rem",
+                    color: "grey.800",
+                    opacity: 0.9,
+                    zIndex: 0,
+                    pointerEvents: "none",
+                  }}
+                />
+                <Typography variant="caption">{tarjeta.id}</Typography>
+              </Card>
+            </Box>
+          );
+        })}
       </Box>
     </Container>
   );

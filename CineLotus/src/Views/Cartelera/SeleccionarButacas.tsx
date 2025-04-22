@@ -10,47 +10,122 @@ import {
 } from "@mui/material";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
+import { ToastContainer, toast } from "react-toastify";
 
-const tarjetas = Array.from({ length: 100 }, (_, i) => ({
-  id: i + 1,
-  titulo: `${i + 1}`,
-}));
-
-type Butaca = {
+type Asiento = {
   id: number;
-  butaca: number;
+  numAsiento: number;
   estado: string;
+  pelicula: string;
   nombrePelicula: string;
   poster: string;
   descripcionPelicula: string;
+  cartelera: string;
   fecha: string;
+  sala: string;
   nombreSala: string;
+  capacidad: number;
+  filas: number;
+  columnas: number;
 };
 
-export default function CuadriculaSinEspacios() {
+export default function SeleccionarButacas() {
   const { id } = useParams();
-  const [peli, setPeli] = useState<Butaca | null>(null);
-  const [estadoAsientos, setEstadoAsientos] = useState<Butaca[]>([]);
+  const [peli, setPeli] = useState<Asiento | null>(null);
+  const [estadoAsientos, setEstadoAsientos] = useState<Asiento[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(true);
+  const cap = peli?.capacidad || 0;
+  const filas = peli?.filas || 0;
+  const columnas = peli?.columnas || 0;
+
+  const [idcartelera, setIdcartelera] = useState(id);
+  const [estado, setEstado] = useState("Pendiente");
+
+  const [idcliente, setIdcliente] = useState<string | null>(null); // Estado para el ID del cliente
+  const [token, setToken] = useState<string | null>(null); // Estado para el token
+
+  useEffect(() => {
+    const token = localStorage.getItem("token"); // O de donde lo almacenes
+    if (token) {
+      setToken(token);
+    }
+  }, []);
+
+  // 2. Decodificar el token y obtener el ID del cliente
+  useEffect(() => {
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica el JWT
+        setIdcliente(payload.id);
+      } catch (error) {
+        console.error("Error al decodificar el token:", error);
+      }
+    }
+  }, [token]); // Se ejecuta cuando el token cambia
+
+  const nuevaReserva = async (butaca: SetStateAction<number>) => {
+    setError(null);
+    setCargando(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/reservas/new",
+        {
+          idcartelera,
+          idcliente,
+          butaca,
+          estado,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || "Error al guardar la reserva");
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Ocurrió un error desconocido");
+      }
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const tarjetas = Array.from({ length: cap }, (_, i) => ({
+    id: i + 1,
+    titulo: `${i + 1}`,
+  }));
 
   const manejarClickAsiento = (numero: number) => {
-    setEstadoAsientos((prev) =>
-      prev.map((asiento) => {
-        if (asiento.butaca === numero) {
-          if (asiento.estado === "Reservada") return asiento; // ocupado, no cambia
-          return {
-            ...asiento,
-            color: asiento.estado === "Libre" ? "verde" : "amarillo",
-          };
-        }
-        return asiento;
-      })
+    const asientoEncontrado = estadoAsientos.find(
+      (asiento) => asiento.numAsiento === numero
     );
+
+    if (asientoEncontrado) {
+      setEstadoAsientos((prev) =>
+        prev.map((asiento) => {
+          if (asiento.numAsiento === numero) {
+            if (asiento.estado === "Reservada") return asiento; // ocupado, no cambia
+            return {
+              ...asiento,
+              estado: asiento.estado === "Libre" ? "Pendiente" : "Libre",
+            };
+          }
+          return asiento;
+        })
+      );
+    } else {
+      nuevaReserva(numero);
+    }
   };
 
   const obtenerColorHex = (estadoNombre: string) => {
@@ -67,19 +142,22 @@ export default function CuadriculaSinEspacios() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    axios
-      .get(`http://localhost:3000/reservas/step3/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setEstadoAsientos(res.data);
-        setPeli(res.data[0]);
-      })
-      .catch(() => setError("Error al cargar los datos"))
-      .finally(() => setCargando(false));
+    const obtenerReservas = async () => {
+      const token = localStorage.getItem("token");
+      axios
+        .get(`http://localhost:3000/reservas/step3/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setEstadoAsientos(res.data);
+          setPeli(res.data[0]);
+        })
+        .catch(() => setError("Error al cargar los datos"))
+        .finally(() => setCargando(false));
+    };
+    obtenerReservas();
   }, [id]);
 
   return (
@@ -112,13 +190,14 @@ export default function CuadriculaSinEspacios() {
           </CardContent>
         </Box>
       </Card>
+      <ToastContainer />
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(10, 1fr)",
-          gridTemplateRows: "repeat(10, 1fr)",
-          width: "50%",
-          height: "500px",
+          gridTemplateColumns: `repeat(${columnas}, 1fr)`,
+          gridTemplateRows: `repeat(${filas}, 1fr)`,
+          width: "75%",
+          height: "100%",
           margin: "0 auto",
           gap: 0, // sin espacio entre columnas ni filas
           border: "1px solid #ccc", // opcional: para ver el borde general
@@ -126,7 +205,7 @@ export default function CuadriculaSinEspacios() {
       >
         {tarjetas.map((tarjeta) => {
           const estado = estadoAsientos.find(
-            (asiento) => asiento.butaca === tarjeta.id
+            (asiento) => asiento.numAsiento === tarjeta.id
           );
           const colorNombre = estado?.estado || "Libre";
           const colorHex = obtenerColorHex(colorNombre);
@@ -147,8 +226,8 @@ export default function CuadriculaSinEspacios() {
                   overflow: "hidden",
                   padding: 2,
                   backgroundColor: colorHex,
-                  cursor: colorNombre === "rojo" ? "not-allowed" : "pointer",
-                  opacity: colorNombre === "rojo" ? 0.6 : 1,
+                  cursor: colorHex === "#f44336" ? "not-allowed" : "pointer",
+                  opacity: colorHex === "#f44336" ? 0.8 : 1,
                 }}
               >
                 <ChairOutlinedIcon

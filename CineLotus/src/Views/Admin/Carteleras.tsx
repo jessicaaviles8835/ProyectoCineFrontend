@@ -10,32 +10,40 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import PeopleIcon from "@mui/icons-material/People";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import type { GridRenderCellParams } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 
-type Usuario = {
-  id: number;
-  nombre: string;
-  email: string;
-  tipo: string;
-  activo: string;
+type Cartelera = {
+  idcartelera: number;
+  pelicula: string;
+  sala: string;
+  fechaFuncion: string;
+  activa: string;
 };
 
 const columnas = [
   { field: "id", headerName: "ID", flex: 1 },
-  { field: "nombre", headerName: "Nombre", flex: 3 },
-  { field: "email", headerName: "Correo", flex: 3 },
-  { field: "tipo", headerName: "Tipo", flex: 2 },
-  { field: "activo", headerName: "Activo", flex: 2 },
+  { field: "pelicula", headerName: "Película", flex: 3 },
+  { field: "sala", headerName: "Sala", flex: 3 },
   {
-    field: "fecha_creacion",
-    headerName: "Fecha Creación",
-
+    field: "fechaFuncion",
+    headerName: "Fecha Función",
+    width: 180,
+    valueFormatter: (value: any) => {
+      if (!value) return "";
+      const fecha = new Date(value);
+      return fecha.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      });
+    },
     flex: 2,
   },
+  { field: "activa", headerName: "Activa", flex: 2 },
   {
     field: "acciones",
     headerName: "Acciones",
@@ -49,7 +57,7 @@ const columnas = [
           component={Link}
           color="primary"
           size="small"
-          to={`/users/edit/${params.row.id}`}
+          to={`/cartelera/edit/${params.row.id}`}
         >
           <EditIcon />
         </IconButton>
@@ -58,39 +66,40 @@ const columnas = [
   },
 ];
 
-const Usuarios = () => {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+const Carteleras = () => {
+  const [carteleras, setCarteleras] = useState<Cartelera[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/users", {
+      .get("http://localhost:3000/cartelera/cartelera", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      .then((res) => setUsuarios(res.data))
-      .catch(() => setError("Error al cargar los Usuarios"))
+      .then((res) => setCarteleras(res.data))
+      .catch(() => setError("Error al cargar las películas"))
       .finally(() => setCargando(false));
   }, []);
 
   const [busqueda, setBusqueda] = useState("");
-  const [filasFiltradas, setFilasFiltradas] = useState(usuarios);
+  const [filasFiltradas, setFilasFiltradas] = useState(carteleras);
 
   useEffect(() => {
     if (!busqueda) {
-      setFilasFiltradas(usuarios); // Si no hay búsqueda, mostrar todos los datos
+      setFilasFiltradas(carteleras); // Si no hay búsqueda, mostrar todos los datos
     } else {
-      const filtradas = usuarios.filter(
+      const filtradas = carteleras.filter(
         (fila) =>
-          fila.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-          fila.email.toLowerCase().includes(busqueda.toLowerCase())
+          fila.pelicula.toLowerCase().includes(busqueda.toLowerCase()) ||
+          fila.sala.toLowerCase().includes(busqueda.toLowerCase()) ||
+          fila.fechaFuncion.toLowerCase().includes(busqueda.toLowerCase())
       );
       setFilasFiltradas(filtradas); // Filtrar datos y actualizar el estado
     }
-  }, [busqueda, usuarios]); // El efecto se ejecuta cada vez que cambia la búsqueda
+  }, [busqueda, carteleras]); // El efecto se ejecuta cada vez que cambia la búsqueda
 
   return (
     <Container sx={{ mt: 5 }}>
@@ -98,23 +107,23 @@ const Usuarios = () => {
       {error && <Alert severity="error">{error}</Alert>}
 
       <Box sx={{ textAlign: "center", mb: 3 }}>
-        <PeopleIcon sx={{ fontSize: 80, color: "#1976d2" }} />
+        <CalendarMonthIcon sx={{ fontSize: 80, color: "#1976d2" }} />
         <Typography
           variant="h4"
           sx={{ fontWeight: "bold", mt: 1, color: "#1976d2" }}
         >
-          Gestión de usuarios
+          Gestión de la cartelera
         </Typography>
       </Box>
       <Box sx={{ mb: 3 }}>
-        <Link to="/nuevousuario" style={{ textDecoration: "none" }}>
+        <Link to="/nuevacartelera" style={{ textDecoration: "none" }}>
           <Button variant="contained" color="primary">
-            Agregar Nuevo Usuario
+            Agregar Nueva Entrada
           </Button>
         </Link>
       </Box>
       <TextField
-        label="Buscar por nombre o correo"
+        label="Buscar por película, sala o fecha"
         variant="outlined"
         fullWidth
         value={busqueda}
@@ -142,4 +151,4 @@ const Usuarios = () => {
   );
 };
 
-export default Usuarios;
+export default Carteleras;

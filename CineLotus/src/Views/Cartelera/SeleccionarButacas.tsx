@@ -7,6 +7,7 @@ import {
   Card,
   CardMedia,
   CardContent,
+  Grid2,
 } from "@mui/material";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import axios from "axios";
@@ -33,8 +34,25 @@ type Asiento = {
   columnas: number;
 };
 
+const LegendItem = ({ color, label }: { color: string; label: string }) => (
+  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+    <Box
+      sx={{
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        borderColor: "#000000",
+        backgroundColor: color,
+        border: "1px solid black",
+        mr: 1.5,
+      }}
+    />
+    <Typography variant="body2">{label}</Typography>
+  </Box>
+);
+
 export default function SeleccionarButacas() {
-  const { id } = useParams();
+  const { idcartelera } = useParams();
   const [peli, setPeli] = useState<Asiento | null>(null);
   const [estadoAsientos, setEstadoAsientos] = useState<Asiento[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -42,15 +60,13 @@ export default function SeleccionarButacas() {
   const cap = peli?.capacidad || 0;
   const filas = peli?.filas || 0;
   const columnas = peli?.columnas || 0;
-
-  const [idcartelera, setIdcartelera] = useState(id);
   const [estado, setEstado] = useState("Pendiente");
 
   const [idcliente, setIdcliente] = useState<string | null>(null); // Estado para el ID del cliente
   const [token, setToken] = useState<string | null>(null); // Estado para el token
-
+  // 1. Obtiene el token
   useEffect(() => {
-    const token = localStorage.getItem("token"); // O de donde lo almacenes
+    const token = localStorage.getItem("token"); //Obtiene el token
     if (token) {
       setToken(token);
     }
@@ -68,11 +84,27 @@ export default function SeleccionarButacas() {
     }
   }, [token]); // Se ejecuta cuando el token cambia
 
+  const obtenerReservas = async () => {
+    const token = localStorage.getItem("token");
+    axios
+      .get(`http://localhost:3000/reservas/step3/${idcartelera}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setEstadoAsientos(res.data);
+        setPeli(res.data[0]);
+      })
+      .catch(() => setError("Error al cargar los datos"))
+      .finally(() => setCargando(false));
+  };
+
   const nuevaReserva = async (butaca: SetStateAction<number>) => {
     setError(null);
     setCargando(true);
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:3000/reservas/new",
         {
           idcartelera,
@@ -86,7 +118,8 @@ export default function SeleccionarButacas() {
           },
         }
       );
-      console.log(response);
+      toast.success("Butaca seleccionada pendiente de confirmación");
+      obtenerReservas();
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Error al guardar la reserva");
@@ -99,6 +132,10 @@ export default function SeleccionarButacas() {
       setCargando(false);
     }
   };
+
+  useEffect(() => {
+    obtenerReservas();
+  }, []);
 
   const tarjetas = Array.from({ length: cap }, (_, i) => ({
     id: i + 1,
@@ -141,25 +178,6 @@ export default function SeleccionarButacas() {
     }
   };
 
-  useEffect(() => {
-    const obtenerReservas = async () => {
-      const token = localStorage.getItem("token");
-      axios
-        .get(`http://localhost:3000/reservas/step3/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setEstadoAsientos(res.data);
-          setPeli(res.data[0]);
-        })
-        .catch(() => setError("Error al cargar los datos"))
-        .finally(() => setCargando(false));
-    };
-    obtenerReservas();
-  }, [id]);
-
   return (
     <Container sx={{ mt: 2 }}>
       {cargando && <CircularProgress />}
@@ -179,7 +197,7 @@ export default function SeleccionarButacas() {
           component="img"
           sx={{ width: 100, objectFit: "cover" }}
           image={`http://localhost:3000/posters/${peli?.poster}`}
-          alt={`Poster de ${id}`}
+          alt={`Poster de ${idcartelera}`}
         />
         <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>
           <CardContent>
@@ -191,64 +209,76 @@ export default function SeleccionarButacas() {
         </Box>
       </Card>
       <ToastContainer />
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: `repeat(${columnas}, 1fr)`,
-          gridTemplateRows: `repeat(${filas}, 1fr)`,
-          width: "75%",
-          height: "100%",
-          margin: "0 auto",
-          gap: 0, // sin espacio entre columnas ni filas
-          border: "1px solid #ccc", // opcional: para ver el borde general
-        }}
-      >
-        {tarjetas.map((tarjeta) => {
-          const estado = estadoAsientos.find(
-            (asiento) => asiento.numAsiento === tarjeta.id
-          );
-          const colorNombre = estado?.estado || "Libre";
-          const colorHex = obtenerColorHex(colorNombre);
+      <Grid2 container spacing={2}>
+        <Grid2 sx={{ width: "80%" }}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${columnas}, 1fr)`,
+              gridTemplateRows: `repeat(${filas}, 1fr)`,
+              width: "100%",
+              height: "100%",
+              margin: "0 auto",
+              gap: 0, // sin espacio entre columnas ni filas
+              border: "1px solid #ccc", // opcional: para ver el borde general
+            }}
+          >
+            {tarjetas.map((tarjeta) => {
+              const estado = estadoAsientos.find(
+                (asiento) => asiento.numAsiento === tarjeta.id
+              );
+              const colorNombre = estado?.estado || "Libre";
+              const colorHex = obtenerColorHex(colorNombre);
 
-          return (
-            <Box
-              key={tarjeta.id}
-              sx={{
-                position: "relative",
-                overflow: "hidden",
-                height: 75,
-              }}
-            >
-              <Card
-                onClick={() => manejarClickAsiento(tarjeta.id)}
-                sx={{
-                  position: "relative",
-                  overflow: "hidden",
-                  padding: 2,
-                  backgroundColor: colorHex,
-                  cursor: colorHex === "#f44336" ? "not-allowed" : "pointer",
-                  opacity: colorHex === "#f44336" ? 0.8 : 1,
-                }}
-              >
-                <ChairOutlinedIcon
+              return (
+                <Box
+                  key={tarjeta.id}
                   sx={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "50%",
-                    transform: "translate(50%, -50%)",
-                    fontSize: "4rem",
-                    color: "grey.800",
-                    opacity: 0.9,
-                    zIndex: 0,
-                    pointerEvents: "none",
+                    position: "relative",
+                    overflow: "hidden",
+                    height: 75,
                   }}
-                />
-                <Typography variant="caption">{tarjeta.id}</Typography>
-              </Card>
-            </Box>
-          );
-        })}
-      </Box>
+                >
+                  <Card
+                    onClick={() => manejarClickAsiento(tarjeta.id)}
+                    sx={{
+                      position: "relative",
+                      overflow: "hidden",
+                      padding: 2,
+                      backgroundColor: colorHex,
+                      cursor:
+                        colorHex === "#f44336" ? "not-allowed" : "pointer",
+                      opacity: colorHex === "#f44336" ? 0.8 : 1,
+                    }}
+                  >
+                    <ChairOutlinedIcon
+                      sx={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "50%",
+                        transform: "translate(50%, -50%)",
+                        fontSize: "4rem",
+                        color: "grey.800",
+                        opacity: 0.9,
+                        zIndex: 0,
+                        pointerEvents: "none",
+                      }}
+                    />
+                    <Typography variant="caption">{tarjeta.id}</Typography>
+                  </Card>
+                </Box>
+              );
+            })}
+          </Box>
+        </Grid2>
+        <Grid2>
+          <Box>
+            <LegendItem color="#ffeb3b" label="Tus asientos" />
+            <LegendItem color="#f44336" label="Reservados" />
+            <LegendItem color="#ffffff" label="Disponibles" />
+          </Box>
+        </Grid2>
+      </Grid2>
     </Container>
   );
 }

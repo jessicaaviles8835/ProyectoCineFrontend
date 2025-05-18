@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function NuevaPelicula() {
   const [nombre, setNombre] = useState("");
@@ -46,7 +47,10 @@ export default function NuevaPelicula() {
         }
       );
       console.log(response);
-      navigate("/peliculas"); // redirige a la lista de peliculas
+      toast.success("Registro insertado con éxito");
+      setTimeout(() => {
+        navigate("/peliculas"); // redirige a la lista de peliculas
+      }, 1000);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Error al guardar la película");
@@ -63,6 +67,7 @@ export default function NuevaPelicula() {
   return (
     <Container maxWidth="sm" sx={{ mt: 5 }}>
       <Box sx={{ mt: 8 }}>
+        <ToastContainer />
         <Typography variant="h4" align="center" gutterBottom>
           Agregar nueva película
         </Typography>

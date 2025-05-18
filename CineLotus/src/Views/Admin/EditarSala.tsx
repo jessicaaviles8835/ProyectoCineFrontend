@@ -12,6 +12,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function EditarSala() {
   const { id } = useParams();
@@ -64,7 +65,10 @@ export default function EditarSala() {
           },
         }
       );
-      navigate("/salas"); // redirige a la lista de salas
+      toast.success("Registro modificado con éxito");
+      setTimeout(() => {
+        navigate("/salas"); // redirige a la lista de salas
+      }, 1000);
     } catch (err) {
       console.log(err);
       if (axios.isAxiosError(err)) {
@@ -79,6 +83,7 @@ export default function EditarSala() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 5 }}>
+      <ToastContainer />
       {cargando && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
       <Box sx={{ mt: 8 }}>

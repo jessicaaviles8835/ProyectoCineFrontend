@@ -87,7 +87,7 @@ export default function NuevaCartelera() {
 
       setTimeout(() => {
         navigate("/cartelera"); // redirige a la lista de peliculas
-      }, 2000);
+      }, 1000);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(

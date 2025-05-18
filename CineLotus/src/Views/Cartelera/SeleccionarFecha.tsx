@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import { useParams } from "react-router-dom";
+import BotonVolver from "../../components/BotonVolver";
 
 type Pelicula = {
   id: number;
@@ -49,6 +50,7 @@ const SeleccionarFecha = () => {
     <Container sx={{ mt: 2 }}>
       {cargando && <CircularProgress />}
       {error && <Alert severity="error">{error}</Alert>}
+      <BotonVolver />
       <Box sx={{ textAlign: "center", mb: 3 }}>
         <MovieFilterIcon sx={{ fontSize: 80, color: "#1976d2" }} />
         <Typography

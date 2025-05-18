@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function EditarPelicula() {
   const { id } = useParams();
@@ -73,7 +74,10 @@ export default function EditarPelicula() {
         }
       );
       console.log(response);
-      navigate("/peliculas"); // redirige a la lista de peliculas
+      toast.success("Registro modificado con éxito");
+      setTimeout(() => {
+        navigate("/peliculas"); // redirige a la lista de peliculas
+      }, 1000);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || "Error al guardar la película");
@@ -89,6 +93,7 @@ export default function EditarPelicula() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 5 }}>
+      <ToastContainer />
       <Box sx={{ mt: 8 }}>
         <Typography variant="h4" align="center" gutterBottom>
           Editar película

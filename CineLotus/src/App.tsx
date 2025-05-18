@@ -7,6 +7,7 @@ import Cartelera from "./Views/Cartelera/Cartelera";
 import SeleccionarFecha from "./Views/Cartelera/SeleccionarFecha";
 import SeleccionarSala from "./Views/Cartelera/SeleccionarSala";
 import SeleccionarButacas from "./Views/Cartelera/SeleccionarButacas";
+import ResumenCompra from "./Views/Cartelera/ResumenCompra";
 
 import { Login } from "./Views/Login/Index";
 import Carteleras from "./Views/Admin/Carteleras";
@@ -79,6 +80,7 @@ function App() {
             path="/reserva/step3/:idcartelera"
             element={<SeleccionarButacas />}
           />
+          <Route path="/resumencompra" element={<ResumenCompra />} />
           <Route path="/cartelera" element={<Carteleras />} />
           <Route path="/nuevacartelera" element={<NuevaCartelera />} />
           <Route path="/salas/:id" element={<EditarSala />} />

@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import CastIcon from "@mui/icons-material/Cast";
 import { Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Sala = {
   idsala: number;
@@ -33,7 +34,7 @@ const Salas = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/salas", {
+      .get(apiUrl + "/salas", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

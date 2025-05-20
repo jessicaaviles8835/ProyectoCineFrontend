@@ -10,6 +10,7 @@ import { BoletoCard } from "./BoletoCard";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Asiento = {
   id: number;
@@ -40,7 +41,7 @@ export default function ResumenCompra() {
     if (ids.length > 0) {
       const token = localStorage.getItem("token");
       axios
-        .get(`http://localhost:3000/reservas/resumen?ids=${ids.join(",")}`, {
+        .get(`${apiUrl}/reservas/resumen?ids=${ids.join(",")}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

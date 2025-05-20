@@ -14,6 +14,7 @@ import axios from "axios";
 import MovieFilterIcon from "@mui/icons-material/MovieFilter";
 import { useParams } from "react-router-dom";
 import BotonVolver from "../../components/BotonVolver";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Pelicula = {
   id: number;
@@ -33,7 +34,7 @@ const SeleccionarFecha = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get(`http://localhost:3000/reservas/step1/${id}`, {
+      .get(`${apiUrl}/reservas/step1/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,7 +65,7 @@ const SeleccionarFecha = () => {
         <CardMedia
           component="img"
           sx={{ width: 200, objectFit: "cover" }}
-          image={`http://localhost:3000/posters/${peli?.poster}`}
+          image={`${apiUrl}/posters/${peli?.poster}`}
           alt={`Poster de ${id}`}
         />
         <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>

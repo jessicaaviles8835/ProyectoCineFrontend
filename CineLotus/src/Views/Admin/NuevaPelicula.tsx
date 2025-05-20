@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function NuevaPelicula() {
   const [nombre, setNombre] = useState("");
@@ -37,15 +38,11 @@ export default function NuevaPelicula() {
     formData.append("descripcion", descripcion);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/peliculas/new",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(apiUrl + "/peliculas/new", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(response);
       toast.success("Registro insertado con éxito");
       setTimeout(() => {

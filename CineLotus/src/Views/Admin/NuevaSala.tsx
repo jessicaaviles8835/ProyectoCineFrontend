@@ -11,6 +11,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function NuevaSala() {
   const [nombre, setNombre] = useState("");
@@ -27,7 +28,7 @@ export default function NuevaSala() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.post(
-        "http://localhost:3000/salas/new",
+        apiUrl + "/salas/new",
         {
           nombre,
           filas,

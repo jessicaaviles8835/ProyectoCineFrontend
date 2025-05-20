@@ -15,6 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import type { GridRenderCellParams } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Cartelera = {
   idcartelera: number;
@@ -74,7 +75,7 @@ const Carteleras = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/cartelera/cartelera", {
+      .get(apiUrl + "/cartelera/cartelera", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

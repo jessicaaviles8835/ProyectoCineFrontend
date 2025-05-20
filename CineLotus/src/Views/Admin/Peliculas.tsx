@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import LocalMoviesOutlinedIcon from "@mui/icons-material/LocalMoviesOutlined";
 import { Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Pelicula = {
   idpelicula: number;
@@ -33,7 +34,7 @@ const Peliculas = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/peliculas", {
+      .get(apiUrl + "/peliculas", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

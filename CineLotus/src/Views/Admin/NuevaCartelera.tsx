@@ -14,6 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Pelicula = {
   idpelicula: number;
@@ -42,12 +43,12 @@ export default function NuevaCartelera() {
       const token = localStorage.getItem("token");
       try {
         const [resPeliculas, resSalas] = await Promise.all([
-          axios.get("http://localhost:3000/peliculas/api/activas", {
+          axios.get(apiUrl + "/peliculas/api/activas", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }),
-          axios.get("http://localhost:3000/salas/api/activas", {
+          axios.get(apiUrl + "/salas/api/activas", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -70,7 +71,7 @@ export default function NuevaCartelera() {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        "http://localhost:3000/cartelera/new",
+        apiUrl + "/cartelera/new",
         {
           pelicula,
           sala,

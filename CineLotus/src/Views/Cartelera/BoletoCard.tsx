@@ -1,5 +1,6 @@
 import { Card, CardMedia, Typography, Box } from "@mui/material";
 import BoletoQR from "../../components/BoletoQR";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Props = {
   id: number;
@@ -40,7 +41,7 @@ export const BoletoCard: React.FC<Props> = ({
       <CardMedia
         component="img"
         sx={{ width: 120, objectFit: "cover" }}
-        image={`http://localhost:3000/posters/${poster}`}
+        image={`${apiUrl}/posters/${poster}`}
         alt={`Poster de ${id}`}
       />
       <Box

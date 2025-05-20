@@ -24,11 +24,12 @@ export default function EditarSala() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get(`http://localhost:3000/salas/${id}`, {
+      .get(`${apiUrl}/salas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,7 +52,7 @@ export default function EditarSala() {
 
     try {
       await axios.put(
-        "http://localhost:3000/salas/edit",
+        apiUrl + "/salas/edit",
         {
           id,
           nombre,

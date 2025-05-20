@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 export default function EditarPelicula() {
   const { id } = useParams();
@@ -30,7 +31,7 @@ export default function EditarPelicula() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get(`http://localhost:3000/peliculas/${id}`, {
+      .get(`${apiUrl}/peliculas/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -64,15 +65,11 @@ export default function EditarPelicula() {
     formData.append("activa", activa);
 
     try {
-      const response = await axios.put(
-        "http://localhost:3000/peliculas/edit",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.put(apiUrl + "/peliculas/edit", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(response);
       toast.success("Registro modificado con éxito");
       setTimeout(() => {
@@ -146,7 +143,7 @@ export default function EditarPelicula() {
             <Box>
               <Typography variant="body2">Póster:</Typography>
               <img
-                src={`http://localhost:3000/posters/${poster}`}
+                src={`${apiUrl}/posters/${poster}`}
                 alt="Poster actual"
                 style={{ maxWidth: 200 }}
               />

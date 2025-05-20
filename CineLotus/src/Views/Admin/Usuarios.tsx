@@ -15,6 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import type { GridRenderCellParams } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type Usuario = {
   id: number;
@@ -66,7 +67,7 @@ const Usuarios = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:3000/users", {
+      .get(apiUrl + "/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

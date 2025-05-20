@@ -21,6 +21,7 @@ import ChairOutlinedIcon from "@mui/icons-material/ChairOutlined";
 import { ToastContainer, toast } from "react-toastify";
 import BotonVolver from "../../components/BotonVolver";
 import { useNavigate } from "react-router-dom";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 //Estilo del modal
 const estiloModal = {
@@ -124,7 +125,7 @@ export default function SeleccionarButacas() {
   const obtenerReservas = async () => {
     const token = localStorage.getItem("token");
     axios
-      .get(`http://localhost:3000/reservas/step3/${idcartelera}`, {
+      .get(`${apiUrl}/reservas/step3/${idcartelera}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -143,7 +144,7 @@ export default function SeleccionarButacas() {
     setCargando(true);
     try {
       await axios.post(
-        "http://localhost:3000/reservas/new",
+        `${apiUrl}/reservas/new`,
         {
           idcartelera,
           idcliente,
@@ -177,7 +178,7 @@ export default function SeleccionarButacas() {
     setCargando(true);
     try {
       await axios.put(
-        "http://localhost:3000/reservas/edit",
+        `${apiUrl}/reservas/edit`,
         {
           asiento,
         },
@@ -314,7 +315,7 @@ export default function SeleccionarButacas() {
     const token = localStorage.getItem("token");
     try {
       await axios.put(
-        "http://localhost:3000/reservas/procesar",
+        `${apiUrl}/reservas/procesar`,
         {
           asientosSeleccionados,
         },
@@ -354,7 +355,7 @@ export default function SeleccionarButacas() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        "http://localhost:3000/reservas/cancelar",
+        `${apiUrl}/reservas/cancelar`,
         {
           asientosSeleccionados,
         },
@@ -401,7 +402,7 @@ export default function SeleccionarButacas() {
         <CardMedia
           component="img"
           sx={{ width: 100, objectFit: "cover" }}
-          image={`http://localhost:3000/posters/${peli?.poster}`}
+          image={`${apiUrl}/posters/${peli?.poster}`}
           alt={`Poster de ${idcartelera}`}
         />
         <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1 }}>

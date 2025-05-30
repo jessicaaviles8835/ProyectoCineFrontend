@@ -24,6 +24,7 @@ import RegistrarUsuario from "./Views/Admin/RegistrarUsuario";
 import NuevoUsuario from "./Views/Admin/NuevoUsuario";
 import EditarUsuario from "./Views/Admin/EditarUsuario";
 import Snackbar from "@mui/material/Snackbar";
+import Reportes from "./Views/Admin/Reportes";
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -85,6 +86,7 @@ function App() {
           <Route path="/nuevacartelera" element={<NuevaCartelera />} />
           <Route path="/salas/:id" element={<EditarSala />} />
           <Route path="/salas" element={<Salas />} />
+          <Route path="/admin" element={<Reportes />} />
           <Route path="/nuevasala" element={<NuevaSala />} />
           <Route path="/salas/:id" element={<EditarSala />} />
           <Route path="/peliculas" element={<Peliculas />} />

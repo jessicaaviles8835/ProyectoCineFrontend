@@ -76,6 +76,18 @@ import MovieFilterIcon from '@mui/icons-material/MovieFilter';
           {puedeVer(['Admin']) && (
           <ListItemButton
             component={Link}
+            to="/admin"
+            onClick={onClose}
+          >
+            <ListItemIcon>
+              <CastIcon />
+            </ListItemIcon>
+            <ListItemText primary="Reportes" />
+          </ListItemButton>)}
+
+          {puedeVer(['Admin']) && (
+          <ListItemButton
+            component={Link}
             to="/peliculas"
             onClick={onClose}
           >
